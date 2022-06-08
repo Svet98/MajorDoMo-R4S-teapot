@@ -1,0 +1,411 @@
+### Основная сцена 
+------------------
+Элемент Чайник.temp
+Состояние - синий
+код - <font color=#00ffff size=4> %G240S.temp%</font>
+условие отображения:
+if (gg('G240S.alive')<>'0' && gg('G240S.temp')>=0 && gg('G240S.temp')<=49) {
+        $display=1;
+} else {
+        $display=0;
+}
+
+Состояние - зеленый
+код - <font color=#00ff00 size=4> %G240S.temp%</font>
+условие отображения:
+if (gg('G240S.alive')<>'0' && gg('G240S.temp')>=50 && gg('G240S.temp')<=69) {
+        $display=1;
+} else {
+        $display=0;
+}
+
+Состояние - желтый
+код - <font color=#ffff00 size=4> %G240S.temp%</font>
+условие отображения:
+if (gg('G240S.alive')<>'0' && gg('G240S.temp')>=70 && gg('G240S.temp')<=79) {
+        $display=1;
+} else {
+        $display=0;
+}
+
+Состояние - оранж
+код - <font color=#ff6600 size=4> %G240S.temp%</font>
+условие отображения:
+if (gg('G240S.alive')<>'0' && gg('G240S.temp')>=80 && gg('G240S.temp')<=89) {
+        $display=1;
+} else {
+        $display=0;
+}
+
+Состояние - красный
+код - <font color=#ff3333 size=4> %G240S.temp%</font>
+условие отображения:
+if (gg('G240S.alive')<>'0' && gg('G240S.temp')>=90 && gg('G240S.temp')<=100) {
+        $display=1;
+} else {
+        $display=0;
+}
+
+**************************************************************
+Элемент - Чайник.select
+Состояние - подогрев и кипячение
+код:
+sg('G240S.heat',0);
+sg('G240S.status',0);
+say ('подогрев чайника выключен',1,aa);
+
+**************************************************************
+Элемент - чайник
+Состояние - синий
+код:
+sg('G240S.heat_temp',gg('G240S.heat_temp0'));
+say ('подогрев чайника включен',1,aa);
+
+условие отображения:
+if (gg('G240S.alive')<>'0' && gg('G240S.status')==0 &&  gg('G240S.heat')==0 && gg('G240S.temp')>=0 && gg('G240S.temp')<=49) {
+        $display=1;
+} else {
+        $display=0;
+}
+
+/// Для остальных цветов меняются только температурные пороги gg('G240S.temp')>=50 && gg('G240S.temp')<=69
+
+Состояние - синий on
+код - отсутствует
+условие отображения:
+if (gg('G240S.alive')<>'0' && (gg('G240S.status')==1 ||  gg('G240S.heat')==1) && gg('G240S.temp')>=0 && gg('G240S.temp')<=49) {
+        $display=1;
+} else {
+        $display=0;
+}
+
+/// Для остальных так же меняютя только температурные пороги gg('G240S.temp')>=50 && gg('G240S.temp')<=69
+
+### Сцена дополнительных настроек на кухне "config Кухня"
+---------------------------------------
+Элемент - основне - чайник
+Состояние - синий вкл
+код - sg('status.dopConfKitchenSelect',2);
+условие отображения:
+if (gg('G240S.alive')<>'0' && (gg('G240S.status')==1 ||  gg('G240S.heat')==1) && gg('G240S.temp')>=0 && gg('G240S.temp')<=49) {
+        $display=1;
+} else {
+        $display=0;
+}
+
+/// Для остальных "вкл" меняется только температурные пороги gg('G240S.temp')>=50 && gg('G240S.temp')<=69
+
+Состояние - синий выкл
+код - sg('status.dopConfKitchenSelect',2);
+условие отображения:
+if (gg('G240S.alive')<>'0' && gg('G240S.status')==0 &&  gg('G240S.heat')==0 && gg('G240S.temp')>=0 && gg('G240S.temp')<=49) {
+        $display=1;
+} else {
+        $display=0;
+}
+
+/// Аналогично "вкл"
+
+**********************************************************************
+Элемент - допы чайник - подогрев
+код:
+<link rel="stylesheet" href="/css/my_qnum.css">
+
+<script type="text/javascript">
+// Heat Temp
+function changeHeatTemp(val) {
+        setGlobal("G240S.heat_temp",val);
+    }
+ var c = document.querySelector('#changeHeatTemp1');
+  if (%G240S.heat_temp% != 30){
+	c.onclick = function() {
+	var s = %G240S.heat_temp% - 1;
+  	setGlobal("G240S.heat_temp",s);
+//    alert('30&deg; - минимально!');
+  }
+ }
+ var c = document.querySelector('#changeHeatTemp2');
+  if (%G240S.heat_temp% != 98){
+	c.onclick = function() {
+	var s = %G240S.heat_temp% + 1;
+  	setGlobal("G240S.heat_temp",s);
+//	alert('98&deg; - максимально!');
+ }
+}
+
+</script>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<font color=#00ccff size=2  style="vertical-align:7px;">подогрев &deg;  </font>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<button class="qnum" type="button" onclick="this.nextElementSibling.stepDown()" id="changeHeatTemp1" >-</button>
+<input type="number" min="30" max="98" value="%G240S.heat_temp%"  class="raz" onchange="changeHeatTemp(this.value)" list="defMode">
+<datalist id="defMode"> 
+	<option value="45">
+    <option value="65">
+    <option value="85">
+</datalist>
+
+<button class="qnum" type="button" onclick="this.previousElementSibling.stepUp()" id="changeHeatTemp2">+</button>
+
+**********************************************************************
+Элемент - допы чайник - info
+код:
+<font color=#00ccff size=2>Темп: </font><font color=#33ffff size=2>%G240S.temp%&deg;</font>&nbsp;&nbsp;
+<font color=#00ccff size=2>кВт/ч: </font><font color=#33ffff size=2>%G240S.total_energy%</font>&nbsp;&nbsp;
+<font color=#00ccff size=2>Включений: </font><font color=#33ffff size=2>%G240S.working_count%</font>
+<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<font color=#00ccff size=2>Время работы: </font><font color=#33ffff size=2>%G240S.working_time%</font><font color=#00ccff size=2>&nbsp;/ч.</font>
+
+**********************************************************************
+Элемент - допы чайник - on-off
+Состояние - вкл
+код:
+setGlobal ("G240S.status",0);
+setGlobal ("G240S.heat",0);
+
+условие отображения:
+if ((gg('G240S.status')=='1' || gg('G240S.heat')=='1')  && gg('G240S.alive')=='1') {
+ $display=1;
+} else {
+ $display=0;
+}
+
+Состояние - выкл
+код - setGlobal ("G240S.status",1);
+условие отображения:
+if (gg('G240S.status')=='0' && gg('G240S.heat')=='0'  && gg('G240S.alive')=='1') {
+ $display=1;
+} else {
+ $display=0;
+}
+
+**********************************************************************
+Элемент - допы чайник - режим
+Состояние - выбор
+код:
+<link rel="stylesheet" href="/css/custom-radio.css">
+<script type="text/javascript">
+var c = document.querySelector('#boil1');
+ if (%G240S.status% ==1) {
+	c.checked = true;
+ }
+var c = document.querySelector('#boil2');
+ if (%G240S.heat% ==1) {
+	c.checked = true; 
+ }
+var c = document.querySelector('#boil3');
+ if (%G240S.temp% ==1) {
+	c.checked = true;
+ }
+
+
+function changeBoilTime(val) {
+        setGlobal("G240S.boilTime",val);
+    }
+
+function changeBoilTime(val) {
+        setGlobal("G240S.boilTime",val);
+    }
+    function changeBoilMode(val) {
+	  setGlobal("G240S.boilMode",val);
+
+		if (val==1) 
+			setGlobal("G240S.status",'1');
+		if (val==2)
+			setGlobal("G240S.heat",1);
+		if (val==3)
+			setGlobal("G240S.prog",2); 
+	}
+
+</script>
+
+<input class="custom-radio" name="color" type="radio" id="boil1" onchange="changeBoilMode(this.value)" value="1">
+<label for="boil1">Кипячение</label>
+<input class="custom-radio" name="color" type="radio" id="boil2" onchange="changeBoilMode(this.value)" value="2">
+<label for="boil2">Подогрев</label>
+<input class="custom-radio" name="color" type="radio" id="boil3" onchange="changeBoilMode(this.value)" value="3">
+<label for="boil3">Кип.+ Подогрев</label>
+<br>
+<img src="/cms/scenes/kitchen/teapot_blue.png" >
+<font color=#00ccff size=2> Время кипячения: </font><font color=#33ffff size=2>%G240S.boilTime%</font>&nbsp;&nbsp;
+<input type="range" id="boilTime" min="-5" max="5" value="%G240S.boilTime%" style="width:170px" onchange="changeBoilTime(this.value)">
+
+Состояние - select
+код:
+<link rel="stylesheet" href="/css/my_qcheckbox.css">
+<link rel="stylesheet" href="/css/my_qnum.css">
+
+<script type="text/javascript">
+var c = document.querySelector('#boilBacklight');
+ if (%G240S.backlight% ==1) {
+	c.checked = true;
+ }
+var c = document.querySelector('#boilNightlight');
+ if (%G240S.nightlight% ==1) {
+	c.checked = true; 
+ }
+var c = document.querySelector('#boilBeep');
+ if (%G240S.beep% ==1) {
+	c.checked = true;
+ }
+var c = document.querySelector('#boilVoice');
+ if (%G240S.voice% ==1) {
+	c.checked = true;
+ }
+
+function fun1() {
+var chbox;
+chbox=document.getElementById('boilBacklight');
+	if (chbox.checked) {
+		alert('Сигнальная подсветка включена');
+		setGlobal('G240S.backlight',1);
+	} else {
+		alert ('Сигнальная подсветка выключена');
+		setGlobal('G240S.backlight',0);
+	}
+}
+
+function fun2() {
+var chbox;
+chbox=document.getElementById('boilNightlight');
+	if (chbox.checked) {
+		alert('Ночник включен');
+		setGlobal('G240S.Nightlight',1);
+	} else {
+		alert ('Ночник выключен');
+		setGlobal('G240S.Nightlight',0);
+	}
+}
+
+function fun3() {
+var chbox;
+chbox=document.getElementById('boilBeep');
+	if (chbox.checked) {
+		alert('Звуковой сигнал включен');
+		setGlobal('G240S.Beep',1);
+	} else {
+		alert ('Звуковой сигнал выключен');
+		setGlobal('G240S.Beep',0);
+	}
+}
+function fun4() {
+var chbox;
+chbox=document.getElementById('boilVoice');
+	if (chbox.checked) {
+		alert('Голосовое оповещение включено');
+		setGlobal('G240S.voice',1);
+	} else {
+		alert ('Голосовое оповещение выключено');
+		setGlobal('G240S.voice',0);
+	}
+}
+
+</script>
+
+
+<br><br><br><br><br><br><br>
+<img src="/cms/scenes/kitchen/illum2.png" style="vertical-align:0px;">
+<font color=#00ccff size=2  style="vertical-align:7px;">Включить подсветку </font>
+<input type="checkbox" class="qcheckbox" id="boilBacklight" name="boilBacklight" onchange="fun1()">
+<label for="boilBacklight"></label>
+<br>
+<img src="/cms/scenes/kitchen/illum_night.png" style="vertical-align:0px;">
+<font color=#00ccff size=2  style="vertical-align:7px;">Включить ночник  </font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<input type="checkbox" class="qcheckbox" id="boilNightlight" name="boilNightlight" onchange="fun2()">
+<label for="boilNightlight"></label>
+<br>&nbsp;
+<img src="/cms/scenes/kitchen/beep.png" style="vertical-align:0px;">
+<font color=#00ccff size=2  style="vertical-align:7px;">Звуковой сигнал </font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<input type="checkbox" class="qcheckbox" id="boilBeep" name="boilBeep" onchange="fun3()">
+<label for="boilBeep"></label>
+<br>&nbsp;
+<img src="/cms/scenes/kitchen/voice2.png" style="vertical-align:0px;">
+<font color=#00ccff size=2  style="vertical-align:7px;">Голосовое оповещение </font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<input type="checkbox" class="qcheckbox" id="boilVoice" name="boilVoice" onchange="fun4()">
+<label for="boilVoice"></label>
+
+Состояние - color Led
+код: 
+<link rel="stylesheet" href="/css/my_qnum.css">
+
+<script type="text/javascript">
+// Blue
+function changeBlue(val) {
+        setGlobal("G240S.nightlight_blue",val);
+    }
+ var c = document.querySelector('#changeBlue1');
+  if (%G240S.nightlight_blue% != 0){
+	c.onclick = function() {
+	var s = %G240S.nightlight_blue% - 1;
+  	setGlobal("G240S.nightlight_blue",s);
+  }
+ }
+ var c = document.querySelector('#changeBlue2');
+  if (%G240S.nightlight_blue% != 255){
+	c.onclick = function() {
+	var s = %G240S.nightlight_blue% + 1;
+  	setGlobal("G240S.nightlight_blue",s);
+ }
+}
+// Red
+function changeRed(val) {
+        setGlobal("G240S.nightlight_red",val);
+    }
+ var c = document.querySelector('#changeRed1');
+  if (%G240S.nightlight_red% != 0){
+	c.onclick = function() {
+	var s = %G240S.nightlight_red% - 1;
+  	setGlobal("G240S.nightlight_red",s);
+  }
+ }
+ var c = document.querySelector('#changeRed2');
+  if (%G240S.nightlight_red% != 255){
+	c.onclick = function() {
+	var s = %G240S.nightlight_red% + 1;
+  	setGlobal("G240S.nightlight_red",s);
+ }
+}
+// Green
+function changeGreen(val) {
+        setGlobal("G240S.nightlight_green",val);
+    }
+ var c = document.querySelector('#changeGreen1');
+  if (%G240S.nightlight_green% != 0){
+	c.onclick = function() {
+	var s = %G240S.nightlight_green% - 1;
+  	setGlobal("G240S.nightlight_green",s);
+  }
+ }
+ var c = document.querySelector('#changeGreen2');
+  if (%G240S.nightlight_green% != 255){
+	c.onclick = function() {
+	var s = %G240S.nightlight_green% + 1;
+  	setGlobal("G240S.nightlight_green",s);
+ }
+}
+
+</script>
+
+<br><br><br><br><br><br><br><br><br><br><br><br>
+<br><br><br><br><br><br><br>
+<img src="/cms/scenes/kitchen/lamp_blue.png" style="vertical-align:0px;">
+<font color=#00ccff size=2  style="vertical-align:7px;">  </font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<button class="qnum" type="button" onclick="this.nextElementSibling.stepDown()" id="changeBlue1" >-</button>
+<input type="number" min="0" max="255" value="%G240S.nightlight_blue%"  class="raz" onchange="changeBlue(this.value)">
+<button class="qnum" type="button" onclick="this.previousElementSibling.stepUp()" id="changeBlue2">+</button>
+
+<br>
+<img src="/cms/scenes/kitchen/lamp_red.png" style="vertical-align:0px;">
+<font color=#00ccff size=2  style="vertical-align:7px;">  </font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<button class="qnum" type="button" onclick="this.nextElementSibling.stepDown()" id="changeRed1" >-</button>
+<input type="number" min="0" max="255" value="%G240S.nightlight_red%"  class="raz" onchange="changeRed(this.value)">
+<button class="qnum" type="button" onclick="this.previousElementSibling.stepUp()" id="changeRed2">+</button>
+
+<br>
+<img src="/cms/scenes/kitchen/lamp_green.png" style="vertical-align:0px;">
+<font color=#00ccff size=2  style="vertical-align:7px;">  </font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<button class="qnum" type="button" onclick="this.nextElementSibling.stepDown()" id="changeGreen1" >-</button>
+<input type="number" min="0" max="255" value="%G240S.nightlight_green%"  class="raz" onchange="changeGreen(this.value)">
+<button class="qnum" type="button" onclick="this.previousElementSibling.stepUp()" id="changeGreen2">+</button>
