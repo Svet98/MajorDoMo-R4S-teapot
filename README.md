@@ -32,3 +32,13 @@
   - [x] звуковой сигнал издаваемый чайником
 
 <br>
+<details>
+<summary>Вид ...</summary>
+
+![Alt-текст](https://github.com/Svet98/MajorDoMo-R4S-teapot/blob/main/jpg/002.png?raw=true "На основной сцене")
+![Alt-текст](https://github.com/Svet98/MajorDoMo-R4S-teapot/blob/main/jpg/003.png?raw=true "На основной сцене")
+    
+![Alt-текст](https://github.com/Svet98/MajorDoMo-R4S-teapot/blob/main/jpg/001.png?raw=true "Сцена управления чайником Redmond через шлюз ESP32 Ready4Sky")
+<br>
+ 
+</details> 
